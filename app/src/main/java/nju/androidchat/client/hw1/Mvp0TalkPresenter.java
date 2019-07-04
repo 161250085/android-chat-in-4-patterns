@@ -47,3 +47,4 @@ public class Mvp0TalkPresenter implements Mvp0Contract.Presenter {
 
     }
 }
+
