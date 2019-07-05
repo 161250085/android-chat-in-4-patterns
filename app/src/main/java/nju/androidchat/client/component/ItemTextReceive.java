@@ -46,4 +46,5 @@ public class ItemTextReceive extends LinearLayout {
     public void setText(String text) {
         textView.setText(text);
     }
+
 }

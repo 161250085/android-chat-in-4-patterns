@@ -6,11 +6,13 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,6 +21,8 @@ import lombok.extern.java.Log;
 import nju.androidchat.client.ClientMessage;
 import nju.androidchat.client.R;
 import nju.androidchat.client.Utils;
+import nju.androidchat.client.component.ItemImgReceive;
+import nju.androidchat.client.component.ItemImgSend;
 import nju.androidchat.client.component.ItemTextReceive;
 import nju.androidchat.client.component.ItemTextSend;
 import nju.androidchat.client.component.OnRecallMessageRequested;
@@ -56,11 +60,36 @@ public class Hw1TalkActivity extends AppCompatActivity implements Mvp0Contract.V
                     // 增加ItemText
                     for (ClientMessage message : messages) {
                         String text = String.format("%s", message.getMessage());
-                        // 如果是自己发的，增加ItemTextSend
-                        if (message.getSenderUsername().equals(this.presenter.getUsername())) {
-                            content.addView(new ItemTextSend(this, text, message.getMessageId(), this));
+                        // 如果是自己发的，判断是图片还是文字信息分别处理
+                        boolean is_image = false;
+                        is_image = text.length()>7&&text.charAt(0) == '!' && text.charAt(1) == '[' && text.charAt(2) == ']' && text.charAt(3) == '(' && text.charAt(4) == '{' && text.charAt(text.length() - 2) == '}' && text.charAt(text.length() - 1) == ')';
+                        String url = is_image?text.substring(5,text.length()-2):"";
+                         if (message.getSenderUsername().equals(this.presenter.getUsername())) {
+                            if(!is_image) {
+                                content.addView(new ItemTextSend(this, text, message.getMessageId(), this));
+                            }else{
+                                    try {
+                                        content.addView(new ItemImgSend(this,url,message.getMessageId(),this));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+                            }
                         } else {
-                            content.addView(new ItemTextReceive(this, text, message.getMessageId()));
+                            if(!is_image){
+                                content.addView(new ItemTextReceive(this, text, message.getMessageId()));
+                            }else {
+                                    try {
+
+
+                                        content.addView(new ItemImgReceive(this, url,message.getMessageId()));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        content.addView(new ItemTextReceive(this, text, message.getMessageId()));
+                                    }
+
+                            }
+
                         }
                     }
 

@@ -1,13 +1,17 @@
 package nju.androidchat.client;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -60,5 +64,5 @@ public class Utils {
     public boolean containsBadWords(String content) {
         return content.contains("fuck");
     }
-
 }
+
